@@ -1,0 +1,8 @@
+{
+    "name": "@vue/reactivity",
+    "version": "1.0.0",
+    "main": "src/index.ts",
+    "scripts": {
+        "build": "bun run --watch build.ts "
+    }
+}

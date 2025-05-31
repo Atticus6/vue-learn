@@ -1,0 +1,21 @@
+{
+  "name": "vue-learn",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "bun-plugin-dts": "^0.3.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@vue/reactivity": "workspace:*",
+    "@vue/shared": "workspace:*"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ]
+}
