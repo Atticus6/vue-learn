@@ -3,27 +3,21 @@ import typescriptLogo from "./typescript.svg";
 import viteLogo from "/vite.svg";
 import { setupCounter } from "./counter.ts";
 
-import { ref, effect, reative, toRefs } from "@vue/reactivity";
+import { ref, effect, reative, toRefs, proxyRefs } from "@vue/reactivity";
 
 const content = document.getElementById("content")!;
 
-const user = reative({ name: "111" });
-const { name } = toRefs(user);
+const user = reative({ name: "111", age: 18 });
+const refs = toRefs(user);
+const res = proxyRefs({ ...refs, a: 1 });
 
 effect(() => {
   console.log("触发更新了");
-  content.innerHTML = `d地址:${name.value}`;
+  content.innerHTML = `d地址:${res.name}`;
 });
 
-// effect(() => {
-//   console.log(user.age);
-// });
-// setTimeout(() => {
-//   user.flag = false;
-// }, 1000);
-
 setTimeout(() => {
-  user.name = "222";
+  res.name = "222";
 }, 1500);
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `

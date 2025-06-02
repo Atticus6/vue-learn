@@ -1,13 +1,15 @@
+import { isObject } from "@vue/shared";
 import { createDep, type Dep } from "./dep";
 import { activeEffect, trackEffect, triggerEffect } from "./effect";
-import { toReactive } from "./reactive";
+import { isReactive, toReactive } from "./reactive";
 
 export const ref = <T>(v: T) => {
   return new RefImpl(v, false);
 };
 
-class RefImpl<T = any> {
+export class RefImpl<T = any> {
   private _value: T;
+  public readonly __v_isRef = true;
   public dep?: Dep = undefined;
   constructor(value: T, readonly __v_isShallow: boolean) {
     this._value = toReactive(value as any);
@@ -45,6 +47,7 @@ class ObjectRefImpl<
   K extends keyof T = keyof T,
   V extends T[K] = T[K]
 > {
+  public readonly __v_isRef = true;
   constructor(private obj: T, private key: K) {}
 
   get value() {
@@ -69,3 +72,30 @@ export const toRefs = <T extends object>(obj: T) => {
 
   return target as ToRefsResult<T>;
 };
+
+export const isRef = (v: object) => {
+  return (v as any)["__v_isRef"] as boolean;
+};
+
+type ProxyRefs<T extends object> = {
+  [K in keyof T]: T[K] extends { value: infer A } ? A : T[K];
+};
+
+export const proxyRefs = <T extends object>(obj: T): ProxyRefs<T> => {
+  return new Proxy(obj as any, {
+    get: (target, key, receiver) => unref(Reflect.get(target, key, receiver)),
+    set(target, key, value, receiver) {
+      const oldValue = target[key];
+      if (isRef(oldValue) && !isRef(value)) {
+        oldValue.value = value;
+        return true;
+      } else {
+        return Reflect.set(target, key, value, receiver);
+      }
+    },
+  });
+};
+
+export function unref<T>(ref: { value: T }): T {
+  return isRef(ref) ? ref.value : (ref as T);
+}

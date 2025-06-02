@@ -1,6 +1,7 @@
 import { isObject } from "@vue/shared";
 import { ReactiveFlags } from "./constants";
 import { mutableHandler } from "./baseHandlers";
+import { isRef, type RefImpl } from "./ref";
 
 const reactiveMap = new WeakMap();
 
@@ -26,4 +27,10 @@ const createReactiveObject = <T extends object>(target: T) => {
 
 export const toReactive = <T extends object>(v: T) => {
   return isObject(v) ? reative(v) : v;
+};
+export const isReactive = (v: any) => {
+  if (!isObject(v)) {
+    return false;
+  }
+  return v[ReactiveFlags.IS_REACTIVE];
 };
