@@ -39,3 +39,21 @@ const triggerRefValue = (ref: RefImpl) => {
     triggerEffect(ref.dep);
   }
 };
+
+class ObjectRefImpl<
+  T extends object = object,
+  K extends keyof T = keyof T,
+  V extends T[K] = T[K]
+> {
+  constructor(private obj: T, private key: K) {}
+
+  get value() {
+    return this.obj[this.key] as V;
+  }
+  set value(newValue: V) {
+    this.obj[this.key] = newValue;
+  }
+}
+export const toRef = <T extends object>(obj: T, key: keyof T) => {
+  return new ObjectRefImpl(obj, key);
+};

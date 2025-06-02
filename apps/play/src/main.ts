@@ -3,15 +3,16 @@ import typescriptLogo from "./typescript.svg";
 import viteLogo from "/vite.svg";
 import { setupCounter } from "./counter.ts";
 
-import { ref, effect } from "@vue/reactivity";
+import { ref, effect, reative, toRef } from "@vue/reactivity";
 
 const content = document.getElementById("content")!;
 
-const user = ref({ name: "111" });
+const user = reative({ name: "111" });
+const name = toRef(user, "name");
 
 effect(() => {
   console.log("触发更新了");
-  content.innerHTML = `d地址:${user.value.name}`;
+  content.innerHTML = `d地址:${name.value}`;
 });
 
 // effect(() => {
@@ -22,7 +23,7 @@ effect(() => {
 // }, 1000);
 
 setTimeout(() => {
-  user.value.name = "222";
+  user.name = "222";
 }, 2000);
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
