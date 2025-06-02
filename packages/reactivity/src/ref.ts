@@ -57,3 +57,15 @@ class ObjectRefImpl<
 export const toRef = <T extends object>(obj: T, key: keyof T) => {
   return new ObjectRefImpl(obj, key);
 };
+
+type ToRefsResult<T extends object> = {
+  [K in keyof T]: ObjectRefImpl<T, K, T[K]>;
+};
+export const toRefs = <T extends object>(obj: T) => {
+  const target = Object.keys(obj).reduce((pre, cur) => {
+    pre[cur] = toRef(obj, cur as keyof T);
+    return pre;
+  }, {} as any);
+
+  return target as ToRefsResult<T>;
+};

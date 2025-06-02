@@ -3,12 +3,12 @@ import typescriptLogo from "./typescript.svg";
 import viteLogo from "/vite.svg";
 import { setupCounter } from "./counter.ts";
 
-import { ref, effect, reative, toRef } from "@vue/reactivity";
+import { ref, effect, reative, toRefs } from "@vue/reactivity";
 
 const content = document.getElementById("content")!;
 
 const user = reative({ name: "111" });
-const name = toRef(user, "name");
+const { name } = toRefs(user);
 
 effect(() => {
   console.log("触发更新了");
@@ -24,7 +24,7 @@ effect(() => {
 
 setTimeout(() => {
   user.name = "222";
-}, 2000);
+}, 1500);
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
   <div>
