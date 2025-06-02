@@ -20,7 +20,7 @@ export const mutableHandler: ProxyHandler<object> = {
     return res;
   },
   set(target, key, value, receiver) {
-    const oldValue = Reflect.get(target, key);
+    let oldValue = (target as any)[key];
     const result = Reflect.set(target, key, value, receiver);
     if (value !== oldValue) {
       trigger(target, key, oldValue, value);

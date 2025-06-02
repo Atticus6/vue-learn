@@ -1,3 +1,4 @@
+import { DirtyLevel } from "./constants";
 import type { Dep } from "./dep";
 
 export const effect = (fn: () => any, options?: any) => {
@@ -28,9 +29,19 @@ export class ReactiveEffect {
   _depsLength = 0;
   deps: Dep[] = [];
   _rounings = 0;
+  _dirtyLevel = DirtyLevel.Dirty;
   constructor(public fn: () => any, public scheduler: () => any) {}
 
+  get dirty() {
+    return this._dirtyLevel === DirtyLevel.Dirty;
+  }
+  set dirty(v: boolean) {
+    this._dirtyLevel = v ? DirtyLevel.Dirty : DirtyLevel.NoDirty;
+  }
+
   run() {
+    this.dirty = false;
+
     if (!this.active) {
       return this.fn();
     }
@@ -78,9 +89,14 @@ export const trackEffect = (effect: ReactiveEffect, dep: Dep) => {
 };
 
 export const triggerEffect = (dep: Dep) => {
-  for (const effect of dep.keys()) {
-    if (!effect._rounings) {
-      effect.scheduler();
+  for (const eff of dep.keys()) {
+    if (eff._dirtyLevel < DirtyLevel.Dirty) {
+      eff._dirtyLevel = DirtyLevel.Dirty;
+    }
+    if (!eff._rounings) {
+      if (eff.scheduler) {
+        eff.scheduler();
+      }
     }
   }
 };
