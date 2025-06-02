@@ -1,19 +1,15 @@
 {
   "name": "play",
-  "module": "index.ts",
-  "type": "module",
   "private": true,
-  "devDependencies": {
-    "@types/bun": "latest",
-    "bun-plugin-tailwind": "^0.0.15"
-  },
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "dev": "bun run server.ts"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "dependencies": {
-    "tailwindcss": "^4.1.8"
+  "devDependencies": {
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5"
   }
 }
